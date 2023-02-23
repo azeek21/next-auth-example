@@ -124,4 +124,39 @@ select {
     scroll-behavior: auto !important;
   }
 }
+
+// EXPERIMENTAL
+
+.loader {
+  position: relative;
+  display: inline-block;
+  padding: var(--padding-small);
+}
+
+.loader::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  animation: loading ease-in-out 2s infinite;
+  background-image: linear-gradient(90deg, rgba(255,255,255,0.0), rgba(0,0,0,0.5), rgba(255,255,255,0.0));
+  backdrop-filter: blur(0.1rem);
+  box-shadow:  ${({theme}) => theme.shadow.primary};
+  background-size: 30%;
+  background-repeat: no-repeat;
+  border-radius: 0.5rem;
+}
+
+@keyframes loading{
+  0% {
+    background-position: -50%;
+  }
+  100% {
+    background-position: 150%;
+  }
+}
+
 `

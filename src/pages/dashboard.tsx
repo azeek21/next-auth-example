@@ -1,5 +1,6 @@
+import Loader from "@/components/loader"
 export default function Dashboard() {
     return (
-        <h1>This is dashboard page</h1>
+        <Loader />
     )
 }

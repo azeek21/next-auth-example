@@ -62,3 +62,33 @@ export default function Navbar() {
     )
 }
 ```
+
+## useSession   
+## Client side authentication (checking user authentication state)
+* Showing or hiding content based on user is looged in or not.
+### useSession
+* NextAuth library has a `hook` named `useSession()` wich returns a `data` wich contains `user data` and `status` wich can be `"authenticated" | "unauthenticated" | "loading"`;
+
+* Depending on the state and data `useSession()` provided we can do conditional rendering.
+
+NOTE: to use `useSession()` hook you NEED to add  `sessionProvider()` at the top level of your pages. Look at `./src/pages/_app.tsx` for my example.
+
+Example: `./src/components/navbar.tsx` : above basic conditionalr rendering of sign in and out buttons depending on the state of the user :arrow_down:
+```
+import { useSession, signIn, signOut } from "next-auth/react"
+
+export default function Navbar() {
+    const {data, state} = useState();
+
+
+    return (
+        { state === "authenticated" && 
+        <button onClick={() => {signOut()}} > Sign Out </button>
+        }
+
+        { state === "unauthenticated" &&
+        <button onClick={() => {signIn()}} > Sign In </button>
+        }
+    )
+}
+```
