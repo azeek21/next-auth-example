@@ -6,7 +6,7 @@ import styled from "styled-components";
 import {signIn, signOut} from 'next-auth/react'
 
 
-function NavbarLink({href, name, clickHandler}: {href: string, name: string, clickHandler?: (providerId? : string) => void}) {
+function NavbarLink({href, name, clickHandler}: {href: string, name: string, clickHandler?: () => void}) {
     const router = useRouter();
 
     const my_path = router.asPath;
@@ -35,7 +35,7 @@ export default function Navbar() {
                 <NavbarLink href="/" name="HOME" />
                 <NavbarLink href="/dashboard" name="DASHBOARD" />
                 <NavbarLink href="/blog" name="BLOG" />
-                <NavbarLink href="/api/auth/signin" name="SIGN IN" clickHandler = {signIn}/>
+                <NavbarLink href="/api/auth/signin" name="SIGN IN" clickHandler = {() => {signIn()}}/>
                 <NavbarLink href="/api/auth/signout" name="SIGN OUT" clickHandler = {() => {signOut()}}/>
                 
             </StyledNavbar>

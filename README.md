@@ -31,13 +31,34 @@ I am using GitHub in my case. <br/>
 Now we have the singin and signout set up, we can't expect user to enter the links manually. Let's learn how to sign up and signout with buttons...
 ## Signin and Signout with buttons
 1. Import `{signIn, signOut}` from `'next-auth/react'` package.
+    * `singIn` function takes an otpional string of provider id. and if specified skips goin to builtin nextauth page and directly proceeds to sign the user in with provider specified in argument. <br/>
+    e.g: if you have like 3 providers but this time you only want to sign user in with `github` you can call `signIn("github")` and user will be take directly to github signin page skipping nextauth page.
+
     - <i> up until version 4 of nextauth singIn and signOut packages has been in 'next-auth/client' package so be careful with your versions. 
     </i>
-2. above ar pure functions, wich means you can use them to sing users in and out with handling onClick events.
+2. above ar pure functions, wich means you can use them to sing users in and out with handling onClick events. <br/>
 Example: `./src/components/navbar.tsx`
-
 ```
+import Link from "next/link";
+import {signIn, signOut} from 'next-auth/react'
 
+export default function Navbar() {
 
+    return (
+        <nav>
+            <Link href="/" > HOME </Link>
 
+            <Link href="/api/auth/signin" onClick={(ev) => {
+                ev.preventDefault();
+                signIn();
+            }} > SIGN IN </Link>
+
+            <Link href="/api/auth/signout" onClick={(ev) => {
+                ev.preventDefault();
+                signOut();
+            }} > SIGN OUT </Link>
+
+        </nav>
+    )
+}
 ```
