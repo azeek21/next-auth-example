@@ -92,3 +92,44 @@ export default function Navbar() {
     )
 }
 ```
+## Securing pages | getSession
+* As of now, our app has no page has no page protection dependign on user is authenticated or not. Now let's secure it.
+1. Import `getSession()` from `"next-auth/react"` package
+2. Check inside `useEffect` if session exists or not. 
+    - <i>NOTE: `getSession` is a `asynchronous` function so make sure to `await` it to get the actual session.</i>
+    - implement a loading state so that you can show a loader instead of actual page if user is not signed in.
+    - return that loading page instead of actual page while `session` is not ready or loading.
+
+3. Redirect/prompt user to sign in (page) if `session` returned by `await getSession()` is a falsy value or show the actual page.
+
+NOTE: You may think just hiding the link or button that takes to our page is enough, but don't forget there's always an option for anyone to make a request to our page directly from anywere. so securing page itself makes it so much more secure and more independent from other sources when it comes to security. <br/>
+
+Example: `./src/pages/dashboard.tsx` :arrow_down:
+```
+import { getSession, signIn } from "next-auth/react"
+import { useState, useEffect } from "react"
+
+export default function Dashboard() {
+    // our loading state
+    const [loading, setLoading] = useState(true)
+    
+    useEffect( () => {
+        const securePage = async () => {
+            const session = await getSession();
+            if (!session) {
+                signIn();
+            } else {
+                setLoading(false);
+            }
+        }
+
+        securePage();
+    });
+
+    if (loading) {
+        return <h1> Loading... </h1>
+    }
+
+    return <h1> Actual Dashboard Page </h1>
+}
+```

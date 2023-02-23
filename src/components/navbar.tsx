@@ -4,13 +4,20 @@ import styled from "styled-components";
 import ButtonLoader from "./loaders/button-loader";
 // singin and signout with buttons
 // from nextauth 4.*, singIn and signOut methods are in 'next-auth/react` not in 'next-auth/client`
-import { signIn, signOut, useSession } from "next-auth/react";
+import { getSession, signIn, signOut, useSession } from "next-auth/react";
 import NavbarLink from "./navbar-link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
   const { data: SES, status: SESstatus } = useSession();
   const [loading, SetLoading] = useState(false);
+
+  useEffect(() => {
+    (async() => {
+        const x = await getSession()
+        console.log(x);
+    })()
+  }, [])
 
   return (
     <nav>
