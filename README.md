@@ -133,3 +133,62 @@ export default function Dashboard() {
     return <h1> Actual Dashboard Page </h1>
 }
 ```
+ 
+## sessionProvider
+* helps to share session across all `useSession()` hooks with the help of `useContext()` under the hood so that every page that uses `useSession()` doesn't have to make a request to server or provider.
+HOWTO: In `_app.tsx` import `SessionProvider` from `"next-auth/react"` and wrap child components around it, and that's it. <br/>
+* you can than use tour session anywhere just by calling `useSession()`. For client side page securing or others.
+
+Example: `./src/pages/_app.tsx`
+
+```
+import { SessionProvider } from "next-auth/react";
+
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <>
+        {/* NextAuth sessionProvider */}
+        <SessionProvider>
+          <Header />
+          <Component {...pageProps} />
+        </SessionProvider>
+    </>
+  );
+}
+```
+Example: `./src/pages/dashboard.tsx`
+```
+
+import ButtonLoader from "@/components/loaders/button-loader";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+
+export default function Dashboard() {
+  const {data, status} = useSession();
+  const [loading, setLoading] = useState(status == 'loading');
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status !== 'loading' && status === 'unauthenticated') {
+      signIn('github');
+    }
+    if (status === "authenticated") {
+      setLoading(false)
+    }
+
+  }, [status])
+
+  if (loading) {
+    return (
+      <div>
+        <ButtonLoader loading={loading}>
+          <h1>Loading ...</h1>
+        </ButtonLoader>
+      </div>
+    );
+  }
+
+  return <h1>Dashboard page for {data?.user?.name}</h1>;
+}
+```

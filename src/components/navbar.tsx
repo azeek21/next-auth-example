@@ -12,13 +12,6 @@ export default function Navbar() {
   const { data: SES, status: SESstatus } = useSession();
   const [loading, SetLoading] = useState(false);
 
-  useEffect(() => {
-    (async() => {
-        const x = await getSession()
-        console.log(x);
-    })()
-  }, [])
-
   return (
     <nav>
       <StyledNavbar>

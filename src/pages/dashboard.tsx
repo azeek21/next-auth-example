@@ -1,23 +1,22 @@
 import ButtonLoader from "@/components/loaders/button-loader";
-import { getSession } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export default function Dashboard() {
-  const [loading, setLoading] = useState(true);
+  const {data, status} = useSession();
+  const [loading, setLoading] = useState(status == 'loading');
   const router = useRouter();
 
   useEffect(() => {
-    const securePage = async () => {
-      const session = await getSession();
-      if (!session) {
-        router.push("/api/auth/signin", undefined, {});
-      } else {
-        setLoading(false);
-      }
-    };
-    securePage();
-  });
+    if (status !== 'loading' && status === 'unauthenticated') {
+      signIn('github');
+    }
+    if (status === "authenticated") {
+      setLoading(false)
+    }
+
+  }, [status])
 
   if (loading) {
     return (
@@ -29,5 +28,5 @@ export default function Dashboard() {
     );
   }
 
-  return <h1>Dashboard page</h1>;
+  return <h1>Dashboard page for {data?.user?.name}</h1>;
 }
