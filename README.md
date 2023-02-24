@@ -192,3 +192,83 @@ export default function Dashboard() {
   return <h1>Dashboard page for {data?.user?.name}</h1>;
 }
 ```
+
+# server side authentication
+* with the help of this we can decide on what props will be passed to component from `getServerSideProps()` functoin. Like paid/subscriber only things if user is logged in and free stuff if not
+HOWTO: just by using `getSession()` we used earlier to secure pages client side. <br/>
+`getSession()` returns an `Promise<session>` and by awaiting it and looking at session object we can manage what will be sent to client from server aka getServerSideProps. <br/>
+Example: `./src/pages/blog.tsx`
+```
+import { GetServerSidePropsContext } from "next";
+import { getSession } from "next-auth/react";
+
+export default function Blog({data} : {data: string}) {
+    return (
+        <>
+                <h1>This is blog page</h1>
+                <p>{data}</p>
+        </>
+    )
+}
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+    const session = await getSession(ctx);
+
+    return {
+        props: {
+            data: session ? 'List of 100 paid blog posts' : 'list of free blog posts'
+        }
+    }   
+}
+```
+
+* Wait, we are already authenticating user server side, right ? and `SessionProvider` also makes a request from client side to get and store the session. Wouldn't it be cool if we can authenticate user once in the server and make `SessionProvider` use that session from the server insteat of making another request. Well, you know, nextJs does cool things and yes we can do that.
+* We can pass session object we used in the server to authenticate user to `SessionProvider` to avoit additional request from client side.
+HOWTO: we can return `session` object inside `props{}` we return from `getServerSideProps()` function and parse it in `_app.tsx` and supply the `session` object to `SessionProvider` in main App component.
+Example: `./src/pages/_app.tsx`
+```
+import type { AppProps } from "next/app";
+import Header from "@/components/header";
+// authentication
+import { SessionProvider } from "next-auth/react";
+
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <>
+        {/* NextAuth sessionProvider */}
+        <SessionProvider session={pageProps?.session}>
+          <Header />
+          <Component {...pageProps} />
+        </SessionProvider>
+    </>
+  );
+}
+```
+  - This way we can tell `SessionProvider` not to make an additional request and use the one we supplied as initial session.
+* And we return session like below from `getServerSideProps` <br/>
+Example: `./src/pages/blog.tsx`
+```
+import { GetServerSidePropsContext } from "next";
+import { getSession } from "next-auth/react";
+
+export default function Blog({data} : {data: string}) {
+    return (
+        <>
+                <h1>This is blog page</h1>
+                <p>{data}</p>
+        </>
+    )
+}
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+    const session = await getSession(ctx);
+
+    return {
+        props: {
+            // this session will be parsed and passed to SessionProvider inside _app.tsx
+            session: session,
+            data: session ? 'List of 100 paid blog posts' : 'list of free blog posts'
+        }
+    }
+}
+```

@@ -13,7 +13,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <GlobalStyle />
 
         {/* NextAuth sessionProvider */}
-        <SessionProvider>
+        <SessionProvider session={pageProps?.session}>
           <Header />
           <Component {...pageProps} />
         </SessionProvider>
