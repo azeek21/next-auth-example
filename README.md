@@ -136,7 +136,7 @@ export default function Dashboard() {
  
 ## sessionProvider
 * helps to share session across all `useSession()` hooks with the help of `useContext()` under the hood so that every page that uses `useSession()` doesn't have to make a request to server or provider.
-HOWTO: In `_app.tsx` import `SessionProvider` from `"next-auth/react"` and wrap child components around it, and that's it. <br/>
+HOWTO: In `_app.tsx` import `SessionProvider` from `"next-auth/react"` and wrap child components around it, and tjihat's it. <br/>
 * you can than use tour session anywhere just by calling `useSession()`. For client side page securing or others.
 
 Example: `./src/pages/_app.tsx`
@@ -268,6 +268,45 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
             // this session will be parsed and passed to SessionProvider inside _app.tsx
             session: session,
             data: session ? 'List of 100 paid blog posts' : 'list of free blog posts'
+        }
+    }
+}
+```
+## server side securing pages
+* from `getServerSideProps` of the page, we can check if user is logged in or not looking at `session` object returned by `getSession()`. and if user is not logged in we can return a redirect object instead of props.
+Example: `./src/pages/blog.tsx`
+```
+import { GetServerSidePropsContext } from "next";
+import { getSession } from "next-auth/react";
+
+export default function Blog({data} : {data: string}) {
+    return (
+        <>
+                <h1>This is blog page</h1>
+                <p>{data}</p>
+        </>
+    )
+}
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+    const session = await getSession(ctx);
+
+    // SECURING PAGE HERE
+    // if user is not logged in, we redirect user to login page...
+    if (!session) {
+        return {
+            redirect: {
+                destination: '/api/auth/signin?callbackUrl=http://localhost:3000/blog',
+                permanent: false,
+            }
+        }
+    }
+
+    return {
+        props: {
+            // this session will be parsed and passed to SessionProvider inside _app.tsx
+            session: session,
+            data: session ? ctx.resolvedUrl : 'list of free blog posts'
         }
     }
 }
