@@ -1,5 +1,5 @@
 import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 
 export default function Blog({data} : {data: string}) {
     return (
@@ -21,7 +21,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
             }
         }
     }
-
+    
     return {
         props: {
             // this session will be parsed and passed to SessionProvider inside _app.tsx
