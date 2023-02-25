@@ -13,20 +13,11 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
     const session = await getSession(ctx);
 
-    if (!session) {
-        return {
-            redirect: {
-                destination: '/api/auth/signin?callbackUrl=http://localhost:3000/blog',
-                permanent: false,
-            }
-        }
-    }
-    
     return {
         props: {
             // this session will be parsed and passed to SessionProvider inside _app.tsx
             session: session,
-            data: session ? ctx.resolvedUrl : 'list of free blog posts'
+            data: session ? "Here will be paid/exclusive content as you are signed in" : 'Free low quality content here, sign in to see exlusive content...'
         }
     }
 }
