@@ -311,3 +311,27 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     }
 }
 ```
+
+# securing api routes
+securing an api route is also almost the same as securing pages.
+
+1. Inside any api handler, just call the `getSession({req})` and check if session exists. <br/>
+    NOTE: `getSession()` function should be supplied the request inside curly braces to extract session from request object. SO dont forget it. <br/>
+    ```getSession({req})```
+2. Respont according to `session` data that getSession() returned.
+3. For specific user permissions, You can check session data, as it will have user email, id or smth similar, you can act according to it. <br/>
+
+Example: `./src/pages/api/test-session.ts`
+```
+import { NextApiRequest, NextApiResponse } from "next";
+import { getSession } from "next-auth/react";
+
+export default async function handelr(req: NextApiRequest, res: NextApiResponse)  {
+    const sessoion = await getSession({req});
+    if (!sessoion) {
+        res.status(401).json({error: "Unauthenticated user"});
+    } else {
+        res.status(200).json({message: "Sucess", sessoion})
+    }
+}
+```
