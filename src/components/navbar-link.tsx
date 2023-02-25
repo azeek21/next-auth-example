@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
-import styled from "styled-components";
+import styled, { ThemedStyledProps } from "styled-components";
+import { THEME_TYPE } from "@/styles/theme/theme";
 
 export default function NavbarLink({
   href,
@@ -33,7 +34,9 @@ export default function NavbarLink({
   );
 }
 
-const StyledNavbarLink = styled.li`
+const StyledNavbarLink = styled.li<{
+  theme: THEME_TYPE, active: boolean
+}>`
   & a {
     color: ${(props) =>
       props.active
