@@ -335,3 +335,28 @@ export default async function handelr(req: NextApiRequest, res: NextApiResponse)
     }
 }
 ```
+
+# connnecting to a database. 
+1.  go to <a href="https://cloud.mongodb.com"> MongoDb website </a> and create a databse.
+2. Install mongodb database locally to your project -> `yarn add mongodb` or `npm install mongodb` if you use npm.
+3. Add mongodb related config to `.env.local` file.
+    - Your username for mongodb database.   | DB_USER
+    - Your password for mongodb databaes.   | DB_PASSWORD
+    - Your connection url for mongodb database | MONGODB_URI
+        - <i> You can get it in mongodb website -> databses -> your databse -> connect -> connect yor application -> connection string. Note: Don't worget to replace your password and username in connection string if needed.</i> <br/>
+4. Add `mongodb` adapter from next-auth website. | ```yarn add @next-auth/mongodb-adapter ```
+5. Create `./src/lib/mongodb.ts` file and copy and paste code from <a href="https://next-auth.js.org/adapters/mongodb"> https://next-auth.js.org/adapters/mongodb </a>
+
+    - Make sure inside the code the all instances of `MONGODB_URI` matches your mongodb connection string variable name from your   `.env.local` file.
+6. in `./src/pages/api/auth/[...nextauth].ts` import mongodb adapter and `clientPromise` from `./src/lib/mongodb.ts` file you created earlier.
+7. set session and jwt settings in `./src/pages/auth/[...nextauth].ts` file. as I did in that file. you can go check it out.
+    - NOTE: for now I set jwt secret to any random string, actually, I let my cat type that for me :smile: <br/>
+
+<b> FILES TO CHECK OUT: `./src/pages/api/auth/[...nextauth].ts` and `./src/lib/mogodb.ts` </b>
+
+NOW WE ARE ALL SET.
+1. Go mongodb website and browser your databse data (collection), should be empty.
+2. start your app and log in. 
+3. Check out database again (refresh), now you can see a new user.  <br/>
+
+CONGRATULATIONS, you did it.
