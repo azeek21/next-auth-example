@@ -42,7 +42,8 @@ export default NextAuth({
         // now session is ready to be issued to end user (whoever asked for user session)
         async session({session, token}) {
             if (session.user) {
-                session.user.id = token.id ;
+                const s = {...session, id: token.id}
+                return s;
             }
             return session;
         }
